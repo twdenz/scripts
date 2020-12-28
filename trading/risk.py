@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import csv
+import pandas as pd
 
 # risk = float(input("\tRisk percentage:\t"))
 risk = 1
@@ -10,7 +12,7 @@ sl = float(input("\tStop loss:\t"))
 print(f"\tAcc. Risk:\t{risk}%")
 
 
-def calculate(tot_acc, enter, sl, risk):
+def calculateRisk(tot_acc, enter, sl, risk):
 	if enter > sl:
 		trade_type = "Long"
 	else:
@@ -28,9 +30,18 @@ def calculate(tot_acc, enter, sl, risk):
 	print(f"\tRisk Perc:\t{round(sl_diff_p*100, 2)}%")
 	print(f"\tMax Loss\t{max_loss}\n")
 
-
+def TradeBook():
+	to_log = input("Do you want to log this trade? (y/n) ").lower()
+	df = pd.read_csv('tradebook.csv')
+	max_tradenr = df["TradeNr"].max()
+	print(max_tradenr)
+	# if to_log == 'y':
+		# df_append = pd.DataFrame({
+			# "TradeNr":
+		# })
+		
 if __name__ == "__main__":
-	calculate(tot_acc, enter, sl, risk)
-
+	calculateRisk(tot_acc, enter, sl, risk)
+	TradeBook()
 
 
