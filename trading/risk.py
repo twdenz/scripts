@@ -27,9 +27,10 @@ def TradeBook(tot_acc, enter, sl, risk, trade_type, pos, max_shares, sl_diff_p, 
 	now = datetime.now()
 	now_formatted = now.strftime("%d-%m-%Y %H:%M:%S")
 	if to_log == 'y':
+		asset = input("What is the asset? ").upper()
 		try:
 			df = pd.read_csv("tradebook.csv")
-			current_max_trade = df.max()["TradeNr"]
+			current_max_trade = df.max()["TradeNr"] 
 			new_trade = {
 				'TradeNr':current_max_trade + 1, 
 				'Date':now_formatted, 
@@ -41,7 +42,8 @@ def TradeBook(tot_acc, enter, sl, risk, trade_type, pos, max_shares, sl_diff_p, 
 				'Position Size':truncate(pos),
 				'Max Shares':truncate(max_shares),
 				'Stop Loss %':f"{round(sl_diff_p*100, 1)}%", 
-				'Max. Loss':max_loss, 
+				'Max. Loss':max_loss,
+				'Asset':asset
 			}
 			df = df.append(new_trade, ignore_index=True)
 			df.to_csv(path_or_buf = "/mnt/c/Users/ThijmenWijgers/Documents/scripts/trading/tradebook.csv", index=False)
@@ -59,6 +61,7 @@ def TradeBook(tot_acc, enter, sl, risk, trade_type, pos, max_shares, sl_diff_p, 
 				'Position Size':[],
 				'Max Shares':[],
 				'Max. Loss':[], 
+				'Asset':[]
 			})
 			new_trade = {
 				'TradeNr':1, 
@@ -72,6 +75,7 @@ def TradeBook(tot_acc, enter, sl, risk, trade_type, pos, max_shares, sl_diff_p, 
 				'Max Shares':truncate(max_shares),
 				'Stop Loss %':f"{round(sl_diff_p*100, 1)}%", 
 				'Max. Loss':max_loss, 
+				'Asset':asset
 			}
 			df = df.append(new_trade, ignore_index=True)
 			overwrite = input("Are you sure you want to overwrite existing tradebook? (y/n) ").lower()
@@ -91,7 +95,9 @@ def calculateRisk(tot_acc, enter, sl, risk):
 	sl_diff_p = sl_diff / enter
 	risk_abs = (risk/100)*tot_acc
 	pos = risk_abs / sl_diff_p
-	max_loss =  pos * sl_diff_p
+	if pos*2 >= tot_acc:
+		pos = tot_acc/2
+	max_loss =  round(pos * sl_diff_p, 2)
 	max_shares = pos / enter
 	print()
 	print("________________________________\n")
