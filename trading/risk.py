@@ -8,7 +8,8 @@ import pandas as pd
 from datetime import datetime
 
 # risk = float(input("\tRisk percentage:\t"))
-risk = 1
+risk = 0.75
+costs= 4.5
 
 print("\nInput Values\n")
 tot_acc = float(input("\tTotal account:\t"))
@@ -93,20 +94,23 @@ def calculateRisk(tot_acc, enter, sl, risk):
 		trade_type = "Short"
 	sl_diff = abs(enter-sl)
 	sl_diff_p = sl_diff / enter
-	risk_abs = (risk/100)*tot_acc
+	risk_abs = ((risk/100)*tot_acc)-costs
 	pos = risk_abs / sl_diff_p
 	if pos*2 >= tot_acc:
 		pos = tot_acc/2
-	max_loss =  round(pos * sl_diff_p, 2)
+	max_loss =  round(pos * sl_diff_p, 2) + costs
 	max_shares = pos / enter
 	print()
 	print("________________________________\n")
 	print("Trade\n")
 	print(f"\tTrade Type:\t{trade_type}")
-	print(f"\tMax Position:\t{round(pos)}")
+	print(f"\tMax Position:\t{round(pos, 1)}")
 	print(f"\tMax Shares:\t{truncate(max_shares)}")
-	print(f"\tRisk Perc:\t{round(sl_diff_p*100, 2)}%")
-	print(f"\tMax Loss\t{max_loss}\n")
+	print(f"\tSL %:\t\t{round(sl_diff_p*100, 1)}%")
+	print(f"\tMax Abs Risk:\t{round(risk_abs, 1)}")
+	print(f"\tMin PT % PE:\t{round((costs/pos)*100, 1)}")
+	print(f"\tMin Loss:\t{costs}")
+	print(f"\tMax Loss:\t{max_loss}\n")
 	TradeBook(tot_acc, enter, sl, risk, trade_type, pos, max_shares, sl_diff_p, max_loss)
 		
 if __name__ == "__main__":
